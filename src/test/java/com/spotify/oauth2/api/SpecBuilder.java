@@ -37,4 +37,13 @@ public static RequestSpecification getRequestSpec() {
                 .log(LogDetail.ALL)
                 .build();
     }
+
+    public static RequestSpecification getAccountRequestSpec() {
+        System.out.println("Creating Request Specification with base URI: https://api.spotify.com");
+        return new RequestSpecBuilder()
+                .setBaseUri(("https://accounts.spotify.com"))
+                .setContentType(ContentType.URLENC)
+                .log(LogDetail.ALL)
+                .build();
+    }
 }

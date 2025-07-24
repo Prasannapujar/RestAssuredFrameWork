@@ -1,8 +1,11 @@
 package com.spotify.oauth2.test;
 
+import com.spotify.oauth2.api.TokenManager;
 import com.spotify.oauth2.api.applicationApi.PlayListApi;
 import com.spotify.oauth2.pojo.Error;
 import com.spotify.oauth2.pojo.Playlist;
+import com.spotify.oauth2.util.ConfigLoader;
+import com.spotify.oauth2.util.DataLoader;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.response.Response;
@@ -28,7 +31,7 @@ public class PlayListV2 {
                 .setPublic(false)
                  .setDescription("This playlist is created for testing purposes");
         System.out.println("Playlist Expected: " + playlistExpected);
-        Response response= PlayListApi.post(playlistExpected,"31athfybzridlo4tgkv4l5w2sybi",accessToken);
+        Response response= PlayListApi.post(playlistExpected, DataLoader.getInstance().getUser(), TokenManager.getAccessesToken());
        Playlist actualPlaylist= response.as(Playlist.class);
 
        assertThat(actualPlaylist.getName(), equalTo(playlistExpected.getName()));
@@ -46,7 +49,7 @@ public class PlayListV2 {
                 .setPublic(false)
                 .setDescription("This playlist is created for testing purposes");
 
-        Response response=PlayListApi.post(playlistExpected,"31athfybzridlo4tgkv4l5w2sybi","123213");
+        Response response=PlayListApi.post(playlistExpected,DataLoader.getInstance().getUser(), "123213");
         Error error= response.as(Error.class);
 
         assertThat(error.getError().getMessage(), equalTo("Invalid access token"));
@@ -60,7 +63,7 @@ public class PlayListV2 {
         // Example test method for getting a playlist
         System.out.println("Running shouldbeAbleToGetPlaylist");
 
-        Response response= PlayListApi.get("1IOVY2ej9hmMOsYBOwzwm7", accessToken);
+        Response response= PlayListApi.get(DataLoader.getInstance().getGetPlaylistId(), TokenManager.getAccessesToken());
 
                Playlist actualPlaylist = response.as(Playlist.class);
 
@@ -78,7 +81,7 @@ public class PlayListV2 {
                 .setName("Updated Playlist Name2")
                 .setDescription("Updated playlist description2");
 
-        Response response=PlayListApi.put("1IOVY2ej9hmMOsYBOwzwm7", playlistExpected, accessToken);
+        Response response=PlayListApi.put(DataLoader.getInstance().getUpdatePlaylistId(), playlistExpected, TokenManager.getAccessesToken());
         response.then().statusCode(200);
 
 
